@@ -1,0 +1,11 @@
+[project]
+name = "composer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.3.4",
+    "scipy>=1.16.3",
+    "sounddevice>=0.5.3",
+]

@@ -1,0 +1,64 @@
+import numpy as np
+import sounddevice as sd
+
+
+def envelope(length, n, fs):
+    yt = np.arange(length) + 1
+    yt = yt / fs
+    shape = yt ** (1 / n) / np.exp(2 * yt)
+    return shape
+
+
+def build_signal(matrix, fs):
+    coefs = np.array(
+        [0.6882, 1, 0.9217, 0.2318, 0.0524, 0.1355, 0.1797, 0.09109, 0.0055, 0.1127]
+    )
+    cf2 = np.arange(10) + 1
+
+    tone = matrix[:, 0]
+    rym = matrix[:, 1] * fs
+    rym = rym.astype(np.int32)
+
+    signal = np.zeros(np.sum(rym))
+    start = 0
+    for tn, r in zip(tone, rym):
+        end = start + r
+        t = np.arange(r) + 1
+        t = t / fs
+        t = t.reshape(-1, 1)
+        a = coefs * np.sin(2 * np.pi * tn * cf2 * t)
+        b = envelope(r, 15, fs)
+        signal[start:end] = np.sum(a.T * b, axis=0)
+        start = end
+
+    return signal
+
+
+def build_melody(matrix, *matrices, fs):
+    signal = build_signal(matrix, fs)
+    for matrix in matrices:
+        signal += build_signal(matrix, fs)
+    signal = signal / np.max(np.abs(signal))
+    return signal
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("melody", type=str, nargs="+", help="旋律文件路径")
+    parser.add_argument("--fs", type=int, default=48000, help="采样率")
+
+    args = parser.parse_args()
+    melody = args.melody
+    fs = args.fs
+    melody = build_melody(*map(np.loadtxt, melody), fs=fs)
+
+    sd.play(melody, fs)
+    # sd.wait()
+    input("按回车结束")
+    sd.stop()
+
+
+if __name__ == "__main__":
+    main()
