@@ -9,7 +9,7 @@ def envelope(length, n, fs):
     return shape
 
 
-def build_signal(matrix, fs):
+def build_signal(matrix, n, fs):
     coefs = np.array(
         [0.6882, 1, 0.9217, 0.2318, 0.0524, 0.1355, 0.1797, 0.09109, 0.0055, 0.1127]
     )
@@ -27,7 +27,7 @@ def build_signal(matrix, fs):
         t = t / fs
         t = t.reshape(-1, 1)
         a = coefs * np.sin(2 * np.pi * tn * cf2 * t)
-        b = envelope(r, 15, fs)
+        b = envelope(r, n, fs)
         signal[start:end] = np.sum(a.T * b, axis=0)
         start = end
 
@@ -35,9 +35,11 @@ def build_signal(matrix, fs):
 
 
 def build_melody(matrix, *matrices, fs):
-    signal = build_signal(matrix, fs)
+    # 主旋律一般是高音，衰减较快
+    signal = build_signal(matrix, 15, fs)
     for matrix in matrices:
-        signal += build_signal(matrix, fs)
+        # 伴奏一般是低音，衰减较慢
+        signal += build_signal(matrix, 2, fs)
     signal = signal / np.max(np.abs(signal))
     return signal
 
@@ -46,7 +48,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("melody", type=str, nargs="+", help="旋律文件路径")
+    parser.add_argument(
+        "melody", type=str, nargs="+", help="旋律文件路径（主旋律放在第一）"
+    )
     parser.add_argument("--fs", type=int, default=48000, help="采样率")
 
     args = parser.parse_args()

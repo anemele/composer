@@ -131,11 +131,12 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("melody", type=str, help="旋律文件路径")
+    parser.add_argument("melody", type=str, nargs="+", help="旋律文件路径")
 
     args = parser.parse_args()
     melody = args.melody
-    convert_and_save(melody)
+    for m in melody:
+        convert_and_save(m)
 
 
 if __name__ == "__main__":
