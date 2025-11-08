@@ -1,4 +1,3 @@
-import os.path
 from typing import Sequence
 
 
@@ -107,8 +106,7 @@ def convert_and_save(fn):
         melody = convert_num_sheet_to_keys(root, melody)
 
     data = convert_keys_to_matrix(melody, R)
-    fn = "_matrix".join(os.path.splitext(fn))
-    with open(fn, "w") as fp:
+    with open(f"{fn}_matrix", "w") as fp:
         fp.write(data)
 
 
