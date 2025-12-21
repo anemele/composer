@@ -18,7 +18,7 @@ def build_piano_keyboard():
         "B0b",
         "B0",
         # C1-B7
-        *[ab.replace("_", str(num+1)) for num in range(7) for ab in tmpl],
+        *[ab.replace("_", str(num + 1)) for num in range(7) for ab in tmpl],
         "C8",
     ]
     # 音高

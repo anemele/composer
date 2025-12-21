@@ -1,5 +1,4 @@
 import numpy as np
-import sounddevice as sd
 
 
 def envelope(length, n, fs):
@@ -66,6 +65,8 @@ def main():
 
         write(save, fs, melody)
     else:
+        import sounddevice as sd
+
         sd.play(melody, fs)
         # sd.wait()
         input("按回车结束")
