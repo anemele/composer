@@ -43,35 +43,5 @@ def build_melody(matrix, *matrices, fs):
     return signal
 
 
-def main():
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "melody", type=str, nargs="+", help="旋律文件路径（主旋律放在第一）"
-    )
-    parser.add_argument("--fs", type=int, default=48000, help="采样率")
-    parser.add_argument("--save", help="保存到文件，不播放")
-
-    args = parser.parse_args()
-    melody = args.melody
-    fs = args.fs
-    save = args.save
-
-    melody = build_melody(*map(np.loadtxt, melody), fs=fs)
-
-    if save is not None:
-        from scipy.io.wavfile import write
-
-        write(save, fs, melody)
-    else:
-        import sounddevice as sd
-
-        sd.play(melody, fs)
-        # sd.wait()
-        input("按回车结束")
-        sd.stop()
-
-
-if __name__ == "__main__":
-    main()
+def read_and_build(*filepath, fs):
+    return build_melody(*map(np.loadtxt, filepath), fs=fs)
