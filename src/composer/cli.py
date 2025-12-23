@@ -2,8 +2,6 @@
 
 默认直接播放，也可以保存到 wav 文件。"""
 
-from os.path import exists
-
 from .composer import to_matrix
 from .signal import read_and_build
 
@@ -25,16 +23,10 @@ def main():
     fs = args.fs
     is_save = args.save
 
-    matrix_file = []
-    for f in file:
-        if f.endswith("_matrix"):
-            matrix_file.append(f)
-        elif exists(fm := f"{f}_matrix"):
-            matrix_file.append(fm)
-        else:
-            matrix_file.append(to_matrix(f))
-
-    melody = read_and_build(*matrix_file, fs=fs)
+    melody = read_and_build(
+        *(to_matrix(f) if not f.endswith("_matrix") else f for f in file),
+        fs=fs,
+    )
 
     if is_save is not None:
         from scipy.io.wavfile import write

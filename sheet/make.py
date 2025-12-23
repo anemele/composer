@@ -12,9 +12,10 @@ if not music_path.exists():
 manifest = """
 4536251
 月半小夜曲 melody1 melody2
+穿越时空的思念
+回梦游仙
 御剑江湖
 浮光
-穿越时空的思念
 """
 
 
