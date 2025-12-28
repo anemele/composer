@@ -9,6 +9,9 @@ if not music_path.exists():
     music_path.mkdir()
     music_path.joinpath(".gitignore").write_text("*")
 
+# NOTE: 4536251 是低音，带数字后缀的是“高音”
+# 需要修改衰减系数，单独生成。
+# 4536251_full 4536251 4536251_1 4536251_2 4536251_3
 manifest = """
 4536251
 月半小夜曲 melody1 melody2
