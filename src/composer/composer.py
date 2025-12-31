@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, Mapping, Self, Sequence
+from typing import Mapping, Self, Sequence
 
 
 def build_piano_keyboard(
@@ -34,15 +34,6 @@ def build_piano_keyboard(
 
 
 Hzd, keys = build_piano_keyboard()
-
-
-@dataclass
-class MatrixItem:
-    hz: float  # 音高
-    t: float  # 时长
-
-    def __str__(self):
-        return f"{self.hz} {self.t}"
 
 
 @dataclass
@@ -126,22 +117,14 @@ class MusicSheet:
 
         return NotImplemented
 
-    def abc_to_matrix(self) -> Iterable[MatrixItem]:
+    def abc_to_matrix(self) -> Sequence[tuple[float, float]]:
         # 音名谱转矩阵
-        for item in self.items:
-            line = MatrixItem(Hzd[item.tone], item.rym / self.R)
-            yield line
+        return tuple((Hzd[item.tone], item.rym / self.R) for item in self.items)
 
 
-def to_matrix(filepath: str) -> str:
+def to_matrix(filepath: str) -> Sequence[tuple[float, float]]:
     with open(filepath, encoding="utf-8") as fp:
         text = fp.read()
 
     matrix = MusicSheet.from_text(text).num_to_abc().abc_to_matrix()
-    data = "\n".join(map(str, matrix))
-
-    mfp = f"{filepath}_matrix"
-    with open(mfp, "w") as fp:
-        fp.write(data)
-
-    return mfp
+    return matrix

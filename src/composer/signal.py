@@ -1,5 +1,7 @@
 import numpy as np
 
+from .composer import to_matrix
+
 
 def envelope(length, n, fs):
     yt = np.arange(length) + 1
@@ -44,4 +46,7 @@ def build_melody(matrix, *matrices, fs):
 
 
 def read_and_build(*filepath, fs):
-    return build_melody(*map(np.loadtxt, filepath), fs=fs)
+    return build_melody(
+        *(np.array(to_matrix(fp)) for fp in filepath),
+        fs=fs,
+    )
